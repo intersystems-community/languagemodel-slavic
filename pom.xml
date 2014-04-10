@@ -12,6 +12,21 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Slavic Language Model</name>
 	<description>Slavic Language Model for use with iKnow/iFind</description>
+	<url>http://intersystems-ru.github.io/languagemodel-slavic/</url>
+	<organization>
+		<name>InterSystems Corp.</name>
+		<url>http://www.intersystems.com/</url>
+	</organization>
+	<inceptionYear>1997</inceptionYear>
+
+	<licenses>
+		<license>
+			<name>Mozilla Public License Version 2.0</name>
+			<url>https://www.mozilla.org/MPL/2.0/index.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<scm>
 		<url>https://github.com/intersystems-ru/languagemodel-slavic</url>
 		<connection>scm:git:https://github.com/intersystems-ru/languagemodel-slavic.git</connection>
@@ -24,7 +39,7 @@
 	<developers>
 		<developer>
 			<id>unix-junkie</id>
-			<name>Andrew ``Bass'' Shcheglov</name>
+			<name>Andrey Shcheglov</name>
 			<email>andrewbass@gmail.com</email>
 		</developer>
 	</developers>
