@@ -155,13 +155,13 @@ $ echo -e 'какая\nдрузья\nлюди\nваркалось\nхливки�
 
 Colons can be used to align columns.
 
-| Product       | Russian | Ukrainian | English | German  | Morphological Analysis                 | Syntax Analysis
-| ------------- |:-------:|:---------:|:-------:|:-------:|----------------------------------------|
-| hunspell      | **yes** | **yes**   | **yes** | **yes** | **yes** (if supported by dictionaries) | no
-| seman         | **yes** | no        | **yes** | **yes** | **yes**                                | **yes**
-| mystem        | **yes** | no        | no      | no      | **yes**                                | no
-| LanguageTool  | **yes** | **yes**   | **yes** | **yes** | **yes**                                | no
-| Lucene        | ?       | ?         | ?       | ?       | ?                                      | no
+| Product       | Russian | Ukrainian | English | German  | Morphological Analysis                 | Syntax Analysis |
+| ------------- |:-------:|:---------:|:-------:|:-------:| -------------------------------------- | --------------- |
+| hunspell      | **yes** | **yes**   | **yes** | **yes** | **yes** (if supported by dictionaries) | no              |
+| seman         | **yes** | no        | **yes** | **yes** | **yes**                                | **yes**         |
+| mystem        | **yes** | no        | no      | no      | **yes**                                | no              |
+| LanguageTool  | **yes** | **yes**   | **yes** | **yes** | **yes**                                | no              |
+| Lucene        | ?       | ?         | ?       | ?       | ?                                      | no              |
 
 ## Programming languages support
 
