@@ -45,6 +45,9 @@
 			<id>unix-junkie</id>
 			<name>Andrey Shcheglov</name>
 			<email>andrewbass@gmail.com</email>
+			<url>https://github.com/unix-junkie</url>
+			<organization>InterSystems Corp.</organization>
+			<organizationUrl>http://www.intersystems.com/</organizationUrl>
 		</developer>
 	</developers>
 
