@@ -36,6 +36,10 @@
 		<url>https://github.com/intersystems-ru/languagemodel-slavic/issues</url>
 	</issueManagement>
 
+	<ciManagement>
+		<url>https://travis-ci.org/intersystems-ru/languagemodel-slavic</url>
+	</ciManagement>
+
 	<developers>
 		<developer>
 			<id>unix-junkie</id>
