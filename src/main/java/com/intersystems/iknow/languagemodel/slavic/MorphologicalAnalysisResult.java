@@ -20,6 +20,9 @@ public final class MorphologicalAnalysisResult implements Serializable {
 	private static final long serialVersionUID = 3598477807346909697L;
 
 	@Nonnull
+	private final String language;
+
+	@Nonnull
 	private final String stem;
 
 	@Nullable
@@ -33,26 +36,39 @@ public final class MorphologicalAnalysisResult implements Serializable {
 	 * may lack affix dictionaries necessary to provide morphological
 	 * information beyond that available about the stemming of the word.
 	 *
+	 * @param language lowercase 2 to 8 language code.
 	 * @param stem
 	 */
-	public MorphologicalAnalysisResult(@Nonnull final String stem) {
-		this(stem, null);
+	public MorphologicalAnalysisResult(@Nonnull final String language,
+			@Nonnull final String stem) {
+		this(language, stem, null);
 	}
 
 	/**
+	 * @param language lowercase 2 to 8 language code.
 	 * @param stem
 	 * @param partOfSpeech
+	 * @param categories
 	 */
-	public MorphologicalAnalysisResult(@Nonnull final String stem,
+	public MorphologicalAnalysisResult(@Nonnull final String language,
+			@Nonnull final String stem,
 			@Nullable final PartOfSpeech partOfSpeech,
 			@Nonnull final GrammaticalCategory ... categories) {
+		if (language == null || language.length() == 0) {
+			throw new IllegalArgumentException("Language is empty");
+		}
 		if (stem == null || stem.length() == 0) {
-			throw new IllegalArgumentException();
+			throw new IllegalArgumentException("Stem is empty");
 		}
 
+		this.language = language;
 		this.stem = stem;
 		this.partOfSpeech = partOfSpeech;
 		this.categories.addAll(asList(categories));
+	}
+
+	public String getLanguage() {
+		return this.language;
 	}
 
 	public String getStem() {
