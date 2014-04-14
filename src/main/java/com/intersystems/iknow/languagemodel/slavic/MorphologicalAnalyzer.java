@@ -23,8 +23,9 @@ public interface MorphologicalAnalyzer extends Remote {
 	 * @param text a single word or a word sequence (i.&nbsp;e. a sentence)
 	 * @return a <em>map</em> of <em>tokens</em> and analyzes
 	 *         corresponding to each token.
+	 * @throws AnalysisException
 	 * @throws RemoteException
 	 */
 	Map<String, Set<MorphologicalAnalysisResult>> analyze(final String text)
-	throws RemoteException;
+	throws AnalysisException, RemoteException;
 }
