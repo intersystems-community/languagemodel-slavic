@@ -82,4 +82,12 @@ public final class MorphologicalAnalysisResult implements Serializable {
 	public Set<? extends GrammaticalCategory> getCategories() {
 		return unmodifiableSet(this.categories);
 	}
+	
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return String.format("{:language %s :stem %s :partOfSpeech %s :categories %s}", this.language, this.stem, this.partOfSpeech, this.categories);
+	}
 }
