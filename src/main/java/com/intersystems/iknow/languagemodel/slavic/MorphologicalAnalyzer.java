@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public interface MorphologicalAnalyzer extends Remote {
 	/**
-	 * Returns a <em>map</em> of <em>tokens</em> (i.&nbsp;e. words) and
+	 * Returns a <em>map</em> of <em>tokens</em> (i.&nbsp;e&nbsp;words) and
 	 * (possibly, multiple) analyzes corresponding to each token. If
 	 * a particular token can't be found in the dictionary, an empty
 	 * set will be mapped to this token.
