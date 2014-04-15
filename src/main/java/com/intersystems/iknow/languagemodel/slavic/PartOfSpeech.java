@@ -16,7 +16,8 @@ import com.intersystems.iknow.languagemodel.slavic.categories.GrammaticalTense;
  */
 public enum PartOfSpeech {
 	/**
-	 * Russian: имя существительное
+	 * Russian: имя существительное<br>
+	 * Ukrainian: іменник
 	 */
 	@SupportedCategories({
 		Declension.class,
@@ -27,7 +28,8 @@ public enum PartOfSpeech {
 	NOUN,
 
 	/**
-	 * Russian: имя прилагательное
+	 * Russian: имя прилагательное<br>
+	 * Ukrainian: прикметник
 	 */
 	@SupportedCategories({
 		GrammaticalCase.class,
@@ -37,7 +39,8 @@ public enum PartOfSpeech {
 	ADJECTIVE,
 
 	/**
-	 * Russian: имя числительное
+	 * Russian: имя числительное<br>
+	 * Ukrainian: числівник
 	 */
 	@SupportedCategories({
 		GrammaticalCase.class,
@@ -47,7 +50,8 @@ public enum PartOfSpeech {
 	NUMERAL,
 
 	/**
-	 * Russian: местоимение
+	 * Russian: местоимение<br>
+	 * Ukrainian: займенник
 	 */
 	@SupportedCategories({
 		GrammaticalCase.class,
@@ -58,7 +62,8 @@ public enum PartOfSpeech {
 	PRONOUN,
 
 	/**
-	 * Russian: глагол
+	 * Russian: глагол<br>
+	 * Ukrainian: дієслово
 	 */
 	@SupportedCategories({
 		GrammaticalGender.class, /* он лежал – она лежала – оно лежало */
@@ -70,32 +75,38 @@ public enum PartOfSpeech {
 	VERB,
 
 	/**
-	 * Russian: наречие
+	 * Russian: наречие<br>
+	 * Ukrainian: прислівник
 	 */
 	ADVERB,
 
 	/**
-	 * Russian: предлог
+	 * Russian: предлог<br>
+	 * Ukrainian: прийменник
 	 */
 	PREPOSITION,
 
 	/**
-	 * Russian: союз
+	 * Russian: союз<br>
+	 * Ukrainian: сполучник
 	 */
 	CONJUNCTION,
 
 	/**
-	 * Russian: частица
+	 * Russian: частица<br>
+	 * Ukrainian: частка
 	 */
 	PARTICLE,
 
 	/**
-	 * Russian: междометие
+	 * Russian: междометие<br>
+	 * Ukrainian: вигук
 	 */
 	INTERJECTION,
 
 	/**
-	 * Russian: причастие
+	 * Russian: причастие<br>
+	 * Ukrainian: дієприкметник
 	 */
 	@SupportedCategories({
 		/* Inherited from adjective: */
@@ -109,7 +120,8 @@ public enum PartOfSpeech {
 	PARTICIPLE,
 
 	/**
-	 * Russian: деепричастие
+	 * Russian: деепричастие<br>
+	 * Ukrainian: дієприслівник
 	 */
 	@SupportedCategories({
 		GrammaticalTense.class, /* умываясь – умывшись */
