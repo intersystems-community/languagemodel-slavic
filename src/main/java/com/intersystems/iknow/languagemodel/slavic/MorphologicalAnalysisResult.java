@@ -98,10 +98,42 @@ public final class MorphologicalAnalysisResult implements Serializable {
 	}
 
 	/**
-	 * @see java.lang.Object#toString()
+	 * @see Object#toString()
 	 */
 	@Override
 	public String toString() {
 		return String.format("{:language %s :stem %s :partOfSpeech %s :categories %s}", this.language, this.stem, this.partOfSpeech, this.categories);
+	}
+
+	/**
+	 * @see Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + this.categories.hashCode();
+		result = prime * result + this.language.hashCode();
+		result = prime * result + (this.partOfSpeech == null ? 0 : this.partOfSpeech.hashCode());
+		result = prime * result + this.stem.hashCode();
+		return result;
+	}
+
+	/**
+	 * @see Object#equals(Object)
+	 */
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof MorphologicalAnalysisResult) {
+			final MorphologicalAnalysisResult that = (MorphologicalAnalysisResult) obj;
+			return this.language.equals(that.language)
+					&& this.stem.equals(that.stem)
+					&& this.partOfSpeech == that.partOfSpeech
+					&& this.categories.equals(that.categories);
+		}
+		return false;
 	}
 }
