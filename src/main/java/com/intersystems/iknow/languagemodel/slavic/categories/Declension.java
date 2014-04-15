@@ -26,4 +26,8 @@ public enum Declension implements GrammaticalCategory {
 	 * </ul>
 	 */
 	FOURTH,
+	/**
+	 * Not inflected at all.
+	 */
+	NONE,
 }
