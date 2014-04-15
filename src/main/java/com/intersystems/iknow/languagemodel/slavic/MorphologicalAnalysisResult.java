@@ -7,6 +7,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableSet;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -54,6 +55,19 @@ public final class MorphologicalAnalysisResult implements Serializable {
 			@Nonnull final String stem,
 			@Nullable final PartOfSpeech partOfSpeech,
 			@Nonnull final GrammaticalCategory ... categories) {
+		this(language, stem, partOfSpeech, asList(categories));
+	}
+
+	/**
+	 * @param language lowercase 2 to 8 language code.
+	 * @param stem
+	 * @param partOfSpeech
+	 * @param categories
+	 */
+	public MorphologicalAnalysisResult(@Nonnull final String language,
+			@Nonnull final String stem,
+			@Nullable final PartOfSpeech partOfSpeech,
+			@Nonnull final Collection<GrammaticalCategory> categories) {
 		if (language == null || language.length() == 0) {
 			throw new IllegalArgumentException("Language is empty");
 		}
@@ -64,7 +78,7 @@ public final class MorphologicalAnalysisResult implements Serializable {
 		this.language = language;
 		this.stem = stem;
 		this.partOfSpeech = partOfSpeech;
-		this.categories.addAll(asList(categories));
+		this.categories.addAll(categories);
 	}
 
 	public String getLanguage() {
@@ -82,7 +96,7 @@ public final class MorphologicalAnalysisResult implements Serializable {
 	public Set<? extends GrammaticalCategory> getCategories() {
 		return unmodifiableSet(this.categories);
 	}
-	
+
 	/**
 	 * @see java.lang.Object#toString()
 	 */
