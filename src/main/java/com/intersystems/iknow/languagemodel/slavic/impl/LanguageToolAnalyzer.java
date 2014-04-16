@@ -32,6 +32,9 @@ import com.intersystems.iknow.languagemodel.slavic.impl.languagetool.TagParser;
 import com.intersystems.iknow.languagemodel.slavic.impl.languagetool.UkrainianTagParser;
 
 /**
+ * Morphological analyzer which uses the <a href =
+ * "https://languagetool.org/">LanguageTool</a> engine.
+ *
  * @author Andrey Shcheglov (mailto:andrey.shcheglov@intersystems.com)
  */
 public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
