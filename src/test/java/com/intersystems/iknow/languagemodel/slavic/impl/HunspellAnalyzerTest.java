@@ -7,16 +7,19 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import com.intersystems.iknow.languagemodel.slavic.MorphologicalAnalyzer;
+import com.intersystems.iknow.languagemodel.slavic.SerializingMorphologicalAnalyzer;
 
 /**
  * @author Andrey Shcheglov (mailto:andrey.shcheglov@intersystems.com)
  */
 public final class HunspellAnalyzerTest {
+	/**
+	 * @throws IOException
+	 */
 	@SuppressWarnings("static-method")
 	@Test
 	public void test() throws IOException {
-		final MorphologicalAnalyzer analyzer = new HunspellAnalyzer();
+		final SerializingMorphologicalAnalyzer analyzer = new SerializingMorphologicalAnalyzer(new HunspellAnalyzer());
 
 		System.out.println(analyzer.analyze("какая"));
 		System.out.println(analyzer.analyze("Мама мыла раму."));

@@ -10,7 +10,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
-import com.intersystems.iknow.languagemodel.slavic.MorphologicalAnalyzer;
+import com.intersystems.iknow.languagemodel.slavic.SerializingMorphologicalAnalyzer;
 import com.intersystems.iknow.languagemodel.slavic.impl.LanguageToolAnalyzer;
 
 /**
@@ -25,7 +25,7 @@ public final class LanguageToolAnalyzerTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void test() throws IOException, ParserConfigurationException, SAXException {
-		final MorphologicalAnalyzer analyzer = new LanguageToolAnalyzer();
+		final SerializingMorphologicalAnalyzer analyzer = new SerializingMorphologicalAnalyzer(new LanguageToolAnalyzer());
 
 		System.out.println(analyzer.analyze("какая"));
 		System.out.println(analyzer.analyze("Мама мыла раму."));
