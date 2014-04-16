@@ -102,7 +102,17 @@ public final class MorphologicalAnalysisResult implements Serializable {
 	 */
 	@Override
 	public String toString() {
-		return String.format("{:language %s :stem %s :partOfSpeech %s :categories %s}", this.language, this.stem, this.partOfSpeech, this.categories);
+		final StringBuilder builder = new StringBuilder();
+		builder.append('{');
+		builder.append(String.format(":language %s :stem %s", this.language, this.stem));
+		if (this.partOfSpeech != null) {
+			builder.append(String.format(" :partOfSpeech %s", this.partOfSpeech));
+		}
+		if (!this.categories.isEmpty()) {
+			builder.append(String.format(" :categories %s", this.categories));
+		}
+		builder.append('}');
+		return builder.toString();
 	}
 
 	/**
