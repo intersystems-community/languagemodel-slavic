@@ -5,6 +5,7 @@ package com.intersystems.iknow.languagemodel.slavic.impl;
 
 import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
+import static java.util.Collections.emptyMap;
 
 import java.io.File;
 import java.io.IOException;
@@ -135,6 +136,10 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 	 */
 	@Override
 	public Map<String, Set<MorphologicalAnalysisResult>> analyze(final String text) {
+		if (text == null || text.length() == 0) {
+			return emptyMap();
+		}
+
 		final Map<String, Set<MorphologicalAnalysisResult>> results = new LinkedHashMap<>();
 
 		for (final Entry<String, Set<Hunspell>> analyzerGroup : this.analyzers.entrySet()) {

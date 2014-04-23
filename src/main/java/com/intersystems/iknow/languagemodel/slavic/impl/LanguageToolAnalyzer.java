@@ -3,6 +3,8 @@
  */
 package com.intersystems.iknow.languagemodel.slavic.impl;
 
+import static java.util.Collections.emptyMap;
+
 import java.io.IOException;
 import java.util.Collections;
 import java.util.HashMap;
@@ -68,6 +70,10 @@ public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
 	 */
 	@Override
 	public Map<String, Set<MorphologicalAnalysisResult>> analyze(final String text) throws AnalysisException {
+		if (text == null || text.length() == 0) {
+			return emptyMap();
+		}
+
 		try {
 			final Map<String, Set<MorphologicalAnalysisResult>> results = new LinkedHashMap<>();
 
