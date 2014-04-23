@@ -5,10 +5,13 @@ package com.intersystems.iknow.languagemodel.slavic.impl;
 
 import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
+import static java.util.stream.Collectors.toSet;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -61,9 +64,9 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 	static {
 		final StringBuilder regex = new StringBuilder();
 		regex.append('[');
-		for (int i = 0, n = WORD_DELIMITERS.length(); i < n; i++) {
-			regex.append('\\').append(WORD_DELIMITERS.charAt(i));
-		}
+		WORD_DELIMITERS.chars().forEach(c -> {
+			regex.append('\\').append((char) c);
+		});
 		regex.append("]+");
 		WORD_DELIMITERS_PATTERN = Pattern.compile(regex.toString());
 	}
@@ -78,21 +81,24 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 				"ru_RU",
 				"uk_UA"));
 
-		final Set<String> searchPaths = new LinkedHashSet<>();
-		for (final String searchPath : POSIX_SEARCH_PATHS) {
-			final File file = new File(searchPath);
-			if (file.exists()) {
-				searchPaths.add(file.getCanonicalPath());
+		final Set<String> searchPaths = stream(POSIX_SEARCH_PATHS).map(File::new).filter(File::exists).map(file -> {
+			try {
+				return file.getCanonicalPath();
+			} catch (final IOException ioe) {
+				throw new UncheckedIOException(ioe);
 			}
-		}
+		}).collect(toSet());
 
 		if (getProperty("os.name").equals("Mac OS X")) {
-			for (final String searchPath : DARWIN_SEARCH_PATHS) {
-				final File file = new File(searchPath);
-				if (file.exists()) {
-					searchPaths.add(file.getCanonicalPath());
+			stream(DARWIN_SEARCH_PATHS).map(File::new).filter(File::exists).map(file -> {
+				try {
+					return file.getCanonicalPath();
+				} catch (final IOException ioe) {
+					throw new UncheckedIOException(ioe);
 				}
-			}
+			}).forEach(canonicalPath -> {
+				searchPaths.add(canonicalPath);
+			});
 		}
 
 
@@ -105,30 +111,33 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 
 		final LinkedHashMap<String, Set<String>> dictionaries = new LinkedHashMap<>();
 
-		for (final String basename : basenames) {
-			for (final String searchPath : searchPaths) {
-				final File dictionary = new File(searchPath, basename + DICTIONARY_SUFFIX);
-				final File affix = new File(dictionary.getCanonicalFile().getParent(), basename + AFFIX_SUFFIX);
-				if (dictionary.exists() && affix.exists()) {
-					final String language = basename.substring(0, 2);
-					Set<String> dictionaryGroup = dictionaries.get(language);
-					if (dictionaryGroup == null) {
-						dictionaryGroup = new LinkedHashSet<>();
-						dictionaries.put(language, dictionaryGroup);
+		basenames.stream().forEach(basename -> {
+			searchPaths.stream().map(searchPath -> new File(searchPath, basename + DICTIONARY_SUFFIX)).forEach(dictionary -> {
+				try {
+					final File affix = new File(dictionary.getCanonicalFile().getParent(), basename + AFFIX_SUFFIX);
+					if (dictionary.exists() && affix.exists()) {
+						final String language = basename.substring(0, 2);
+						Set<String> dictionaryGroup = dictionaries.get(language);
+						if (dictionaryGroup == null) {
+							dictionaryGroup = new LinkedHashSet<>();
+							dictionaries.put(language, dictionaryGroup);
+						}
+						final String dictionaryPath = dictionary.getCanonicalPath();
+						dictionaryGroup.add(dictionaryPath.substring(0, dictionaryPath.length() - 4));
 					}
-					final String dictionaryPath = dictionary.getCanonicalPath();
-					dictionaryGroup.add(dictionaryPath.substring(0, dictionaryPath.length() - 4));
+				} catch (final IOException ioe) {
+					throw new UncheckedIOException(ioe);
 				}
-			}
-		}
+			});
+		});
 
-		for (final Entry<String, Set<String>> dictionaryGroup : dictionaries.entrySet()) {
+		dictionaries.entrySet().stream().forEach(dictionaryGroup -> {
 			final Set<Hunspell> engineGroup = new LinkedHashSet<>();
-			for (final String dictionary : dictionaryGroup.getValue()) {
+			dictionaryGroup.getValue().stream().forEach(dictionary -> {
 				engineGroup.add(new Hunspell(dictionary + DICTIONARY_SUFFIX, dictionary + AFFIX_SUFFIX));
-			}
+			});
 			this.analyzers.put(dictionaryGroup.getKey(), engineGroup);
-		}
+		});
 	}
 
 	/**
@@ -143,8 +152,8 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 		final Map<String, Set<MorphologicalAnalysisResult>> results = new LinkedHashMap<>();
 
 		for (final Entry<String, Set<Hunspell>> analyzerGroup : this.analyzers.entrySet()) {
-			for (final Hunspell analyzer : analyzerGroup.getValue()) {
-				for (final String token : split(text)) {
+			analyzerGroup.getValue().stream().forEach(analyzer -> {
+				split(text).stream().forEach(token -> {
 					Set<MorphologicalAnalysisResult> resultsGroup = results.get(token);
 
 					final List<String> readings = analyzer.stem(token);
@@ -156,18 +165,18 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 							 */
 							results.put(token, Collections.<MorphologicalAnalysisResult>emptySet());
 						}
-						continue;
-					}
-					for (final String reading : readings) {
-						final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(analyzerGroup.getKey(), reading);
-						if (resultsGroup == null || resultsGroup.isEmpty()) {
-							resultsGroup = new LinkedHashSet<>();
-							results.put(token, resultsGroup);
+					} else {
+						for (final String reading : readings) {
+							final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(analyzerGroup.getKey(), reading);
+							if (resultsGroup == null || resultsGroup.isEmpty()) {
+								resultsGroup = new LinkedHashSet<>();
+								results.put(token, resultsGroup);
+							}
+							resultsGroup.add(result);
 						}
-						resultsGroup.add(result);
 					}
-				}
-			}
+				});
+			});
 		}
 		return results;
 	}
