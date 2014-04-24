@@ -32,9 +32,7 @@ public final class MorphologicalAnalysisResultSerializer implements JsonSerializ
 		final Set<? extends GrammaticalCategory> categories = src.getCategories();
 		if (!categories.isEmpty()) {
 			final JsonArray serializedCategories = new JsonArray();
-			for (final GrammaticalCategory category : categories) {
-				serializedCategories.add(new JsonPrimitive(category.toString()));
-			}
+			categories.stream().map(GrammaticalCategory::toString).map(JsonPrimitive::new).forEach(serializedCategory -> serializedCategories.add(serializedCategory));
 			jsonObject.add("categories", serializedCategories);
 		}
 		return jsonObject;

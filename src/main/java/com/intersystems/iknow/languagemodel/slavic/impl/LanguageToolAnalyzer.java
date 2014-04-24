@@ -3,29 +3,27 @@
  */
 package com.intersystems.iknow.languagemodel.slavic.impl;
 
+import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.languagetool.AnalyzedSentence;
 import org.languagetool.AnalyzedToken;
-import org.languagetool.AnalyzedTokenReadings;
 import org.languagetool.JLanguageTool;
 import org.languagetool.language.Russian;
 import org.languagetool.language.Ukrainian;
 import org.xml.sax.SAXException;
 
-import com.intersystems.iknow.languagemodel.slavic.AnalysisException;
 import com.intersystems.iknow.languagemodel.slavic.MorphologicalAnalysisResult;
 import com.intersystems.iknow.languagemodel.slavic.MorphologicalAnalyzer;
 import com.intersystems.iknow.languagemodel.slavic.impl.languagetool.RussianTagParser;
@@ -48,7 +46,7 @@ public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
 	 */
 	private static final String WORD_DELIMITERS = "!\"'()*,-./:;<>?[]^`{}";
 
-	final Map<String, Engine> analyzers = new HashMap<>();
+	final Map<String, Engine> analyzers = new LinkedHashMap<>();
 
 	/**
 	 * @throws IOException
@@ -69,26 +67,25 @@ public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
 	 * @see MorphologicalAnalyzer#analyze(String)
 	 */
 	@Override
-	public Map<String, Set<MorphologicalAnalysisResult>> analyze(final String text) throws AnalysisException {
+	public Map<String, Set<MorphologicalAnalysisResult>> analyze(final String text) {
 		if (text == null || text.length() == 0) {
 			return emptyMap();
 		}
 
-		try {
-			final Map<String, Set<MorphologicalAnalysisResult>> results = new LinkedHashMap<>();
+		final Map<String, Set<MorphologicalAnalysisResult>> results = new LinkedHashMap<>();
 
-			for (final Entry<String, Engine> analyzer : this.analyzers.entrySet()) {
-				final AnalyzedSentence analyzedSentence = analyzer.getValue().languageTool.getAnalyzedSentence(text);
+		this.analyzers.forEach((language, engine) -> {
+			try {
+				final AnalyzedSentence analyzedSentence = engine.languageTool.getAnalyzedSentence(text);
 
-				for (final AnalyzedTokenReadings analyzedTokenReadings : analyzedSentence.getTokensWithoutWhitespace()) {
+				stream(analyzedSentence.getTokensWithoutWhitespace()).filter(analyzedTokenReadings -> {
 					final String token = analyzedTokenReadings.getToken();
-					if (token.isEmpty() || token.length() == 1 && WORD_DELIMITERS.contains(token)) {
-						/*
-						 * Don't return single-char punctuation marks.
-						 */
-						continue;
-					}
-
+					/*
+					 * Don't return single-char punctuation marks.
+					 */
+					return !token.isEmpty() && !(token.length() == 1 && WORD_DELIMITERS.contains(token));
+				}).forEach(analyzedTokenReadings -> {
+					final String token = analyzedTokenReadings.getToken();
 					Set<MorphologicalAnalysisResult> resultsGroup = results.get(token);
 
 					final List<AnalyzedToken> readings = analyzedTokenReadings.getReadings();
@@ -100,30 +97,29 @@ public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
 							 */
 							results.put(token, Collections.<MorphologicalAnalysisResult>emptySet());
 						}
-						continue;
-					}
-					for (final AnalyzedToken reading : readings) {
-						final String posTag = reading.getPOSTag();
-						if (posTag.equals(SENTENCE_END)) {
+					} else {
+						for (final AnalyzedToken reading : readings) {
+							final String posTag = reading.getPOSTag();
 							/*
 							 * Skip sentence end marks.
 							 */
-							continue;
+							if (!posTag.equals(SENTENCE_END)) {
+								final TagParseResult tagParseResult = engine.tagParser.parse(posTag);
+								final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(language, reading.getLemma(), tagParseResult.getPartOfSpeech(), tagParseResult.getCategories());
+								if (resultsGroup == null || resultsGroup.isEmpty()) {
+									resultsGroup = new LinkedHashSet<>();
+									results.put(token, resultsGroup);
+								}
+								resultsGroup.add(result);
+							}
 						}
-						final TagParseResult tagParseResult = analyzer.getValue().tagParser.parse(posTag);
-						final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(analyzer.getKey(), reading.getLemma(), tagParseResult.getPartOfSpeech(), tagParseResult.getCategories());
-						if (resultsGroup == null || resultsGroup.isEmpty()) {
-							resultsGroup = new LinkedHashSet<>();
-							results.put(token, resultsGroup);
-						}
-						resultsGroup.add(result);
 					}
-				}
+				});
+			} catch (final IOException ioe) {
+				throw new UncheckedIOException(ioe);
 			}
-			return results;
-		} catch (final IOException ioe) {
-			throw new AnalysisException(ioe);
-		}
+		});
+		return results;
 	}
 
 	/**

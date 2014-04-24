@@ -3,7 +3,12 @@
  */
 package com.intersystems.iknow.languagemodel.slavic.impl;
 
+import static java.lang.System.out;
+import static java.util.Arrays.stream;
+import static junit.framework.Assert.fail;
+
 import java.io.IOException;
+import java.rmi.RemoteException;
 
 import org.junit.Test;
 
@@ -20,25 +25,33 @@ public final class HunspellAnalyzerTest {
 	@Test
 	public void test() throws IOException {
 		final SerializingMorphologicalAnalyzer analyzer = new SerializingMorphologicalAnalyzer(new HunspellAnalyzer());
+		stream(new String[]{
+				"какая",
+				"Мама мыла раму.",
+				"Варкалось, хливкие шорьки пырялись по наве.",
+				"толстый и красивый",
+				"по",
+				"друзья",
+				"люди",
+				"Садок вишневий коло хати.",
 
-		System.out.println(analyzer.analyze("какая"));
-		System.out.println(analyzer.analyze("Мама мыла раму."));
-		System.out.println(analyzer.analyze("Варкалось, хливкие шорьки пырялись по наве."));
-		System.out.println(analyzer.analyze("толстый и красивый"));
-		System.out.println(analyzer.analyze("по"));
-		System.out.println(analyzer.analyze("друзья"));
-		System.out.println(analyzer.analyze("люди"));
-		System.out.println(analyzer.analyze("Садок вишневий коло хати."));
+				/*
+				 * IV-th declension, should be the same for both Russian and Ukrainian.
+				 */
+				"дитя",
+				"дитяти",
 
-		/*
-		 * IV-th declension, should be the same for both Russian and Ukrainian.
-		 */
-		System.out.println(analyzer.analyze("дитя"));
-		System.out.println(analyzer.analyze("дитяти"));
-
-		System.out.println(analyzer.analyze("жовтогарячий"));
-		System.out.println(analyzer.analyze("п'ятниця"));
-		System.out.println(analyzer.analyze("побачений, висловлений, загорнений, розколений, позичений"));
-		System.out.println(analyzer.analyze("атакуючий, дозрілий"));
+				"жовтогарячий",
+				"п'ятниця",
+				"побачений, висловлений, загорнений, розколений, позичений",
+				"атакуючий, дозрілий",
+		}).forEach(text -> {
+			try {
+				out.println(analyzer.analyze(text));
+			} catch (final RemoteException re) {
+				re.printStackTrace();
+				fail(re.getMessage());
+			}
+		});
 	}
 }

@@ -7,18 +7,16 @@ import static java.lang.System.getProperty;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyMap;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.toCollection;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -64,30 +62,26 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 	static {
 		final StringBuilder regex = new StringBuilder();
 		regex.append('[');
-		WORD_DELIMITERS.chars().forEach(c -> {
-			regex.append('\\').append((char) c);
-		});
+		WORD_DELIMITERS.chars().forEach(c -> regex.append('\\').append((char) c));
 		regex.append("]+");
 		WORD_DELIMITERS_PATTERN = Pattern.compile(regex.toString());
 	}
 
 	private final LinkedHashMap<String, Set<Hunspell>> analyzers = new LinkedHashMap<>();
 
-	/**
-	 * @throws IOException
-	 */
-	public HunspellAnalyzer() throws IOException {
+	public HunspellAnalyzer() {
 		final Set<String> basenames = new LinkedHashSet<>(asList(
 				"ru_RU",
 				"uk_UA"));
 
-		final Set<String> searchPaths = stream(POSIX_SEARCH_PATHS).map(File::new).filter(File::exists).map(file -> {
+		final Set<String> searchPaths = new LinkedHashSet<>();
+		stream(POSIX_SEARCH_PATHS).map(File::new).filter(File::exists).map(file -> {
 			try {
 				return file.getCanonicalPath();
 			} catch (final IOException ioe) {
 				throw new UncheckedIOException(ioe);
 			}
-		}).collect(toSet());
+		}).collect(toCollection(() -> searchPaths));
 
 		if (getProperty("os.name").equals("Mac OS X")) {
 			stream(DARWIN_SEARCH_PATHS).map(File::new).filter(File::exists).map(file -> {
@@ -96,22 +90,13 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 				} catch (final IOException ioe) {
 					throw new UncheckedIOException(ioe);
 				}
-			}).forEach(canonicalPath -> {
-				searchPaths.add(canonicalPath);
-			});
+			}).collect(toCollection(() -> searchPaths));
 		}
 
-
-		final Iterator<String> it = searchPaths.iterator();
-		while (it.hasNext()) {
-			if (!new File(it.next()).exists()) {
-				it.remove();
-			}
-		}
 
 		final LinkedHashMap<String, Set<String>> dictionaries = new LinkedHashMap<>();
 
-		basenames.stream().forEach(basename -> {
+		basenames.forEach(basename -> {
 			searchPaths.stream().map(searchPath -> new File(searchPath, basename + DICTIONARY_SUFFIX)).forEach(dictionary -> {
 				try {
 					final File affix = new File(dictionary.getCanonicalFile().getParent(), basename + AFFIX_SUFFIX);
@@ -131,12 +116,10 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 			});
 		});
 
-		dictionaries.entrySet().stream().forEach(dictionaryGroup -> {
+		dictionaries.forEach((language, dictionaryGroup) -> {
 			final Set<Hunspell> engineGroup = new LinkedHashSet<>();
-			dictionaryGroup.getValue().stream().forEach(dictionary -> {
-				engineGroup.add(new Hunspell(dictionary + DICTIONARY_SUFFIX, dictionary + AFFIX_SUFFIX));
-			});
-			this.analyzers.put(dictionaryGroup.getKey(), engineGroup);
+			dictionaryGroup.stream().map(dictionary -> new Hunspell(dictionary + DICTIONARY_SUFFIX, dictionary + AFFIX_SUFFIX)).collect(toCollection(() -> engineGroup));
+			this.analyzers.put(language, engineGroup);
 		});
 	}
 
@@ -151,33 +134,30 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 
 		final Map<String, Set<MorphologicalAnalysisResult>> results = new LinkedHashMap<>();
 
-		for (final Entry<String, Set<Hunspell>> analyzerGroup : this.analyzers.entrySet()) {
-			analyzerGroup.getValue().stream().forEach(analyzer -> {
-				split(text).stream().forEach(token -> {
+		this.analyzers.forEach((language, analyzerGroup) -> {
+			analyzerGroup.forEach(analyzer -> {
+				split(text).forEach(token -> {
 					Set<MorphologicalAnalysisResult> resultsGroup = results.get(token);
 
 					final List<String> readings = analyzer.stem(token);
-					if (readings.isEmpty()) {
-						if (resultsGroup == null) {
-							/*
-							 * Make sure tokens not present in the dictionary
-							 * still appear in the results returned.
-							 */
-							results.put(token, Collections.<MorphologicalAnalysisResult>emptySet());
+					if (readings.isEmpty() && resultsGroup == null) {
+						/*
+						 * Make sure tokens not present in the dictionary
+						 * still appear in the results returned.
+						 */
+						results.put(token, Collections.<MorphologicalAnalysisResult>emptySet());
+					}
+					for (final String reading : readings) {
+						final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(language, reading);
+						if (resultsGroup == null || resultsGroup.isEmpty()) {
+							resultsGroup = new LinkedHashSet<>();
+							results.put(token, resultsGroup);
 						}
-					} else {
-						for (final String reading : readings) {
-							final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(analyzerGroup.getKey(), reading);
-							if (resultsGroup == null || resultsGroup.isEmpty()) {
-								resultsGroup = new LinkedHashSet<>();
-								results.put(token, resultsGroup);
-							}
-							resultsGroup.add(result);
-						}
+						resultsGroup.add(result);
 					}
 				});
 			});
-		}
+		});
 		return results;
 	}
 
