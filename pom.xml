@@ -4,12 +4,11 @@
 
  vim:ai noci noet nopi sts=8 sw=8 ts=8:
  -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.intersystems</groupId>
 	<artifactId>languagemodel-slavic</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>Slavic Language Model</name>
 	<description>Slavic Language Model for use with iKnow/iFind</description>
 	<url>http://intersystems-ru.github.io/languagemodel-slavic/</url>
