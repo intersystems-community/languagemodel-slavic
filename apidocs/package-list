@@ -1,2 +1,4 @@
 com.intersystems.iknow.languagemodel.slavic
 com.intersystems.iknow.languagemodel.slavic.categories
+com.intersystems.iknow.languagemodel.slavic.impl
+com.intersystems.iknow.languagemodel.slavic.impl.languagetool
