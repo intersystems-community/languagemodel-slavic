@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.intersystems</groupId>
 	<artifactId>languagemodel-slavic</artifactId>
-	<version>0.0.1</version>
+	<version>0.0.2-SNAPSHOT</version>
 	<name>Slavic Language Model</name>
 	<description>Slavic Language Model for use with iKnow/iFind</description>
 	<url>http://intersystems-ru.github.io/languagemodel-slavic/</url>
