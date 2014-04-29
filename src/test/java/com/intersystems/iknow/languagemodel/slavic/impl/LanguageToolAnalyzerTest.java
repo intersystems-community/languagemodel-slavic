@@ -3,8 +3,10 @@
  */
 package com.intersystems.iknow.languagemodel.slavic.impl;
 
+import static com.intersystems.iknow.languagemodel.slavic.impl.LanguageToolAnalyzer.RUSSIAN_WORD_FILTER;
 import static java.lang.System.out;
 import static java.util.Arrays.stream;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.Assert.fail;
@@ -24,7 +26,23 @@ import com.intersystems.iknow.languagemodel.slavic.SerializingMorphologicalAnaly
 /**
  * @author Andrey Shcheglov (mailto:andrey.shcheglov@intersystems.com)
  */
-public final class HunspellAnalyzerTest {
+public final class LanguageToolAnalyzerTest {
+	@SuppressWarnings("static-method")
+	@Test
+	public void testWordFilter() {
+		assertEquals("він   вона", RUSSIAN_WORD_FILTER.getFilteredText("він п'ятниця п'ятниця вона"));
+		assertEquals("він  вона", RUSSIAN_WORD_FILTER.getFilteredText("він п'ятниця вона"));
+		assertEquals("він ", RUSSIAN_WORD_FILTER.getFilteredText("він п'ятниця"));
+		assertEquals(" вона", RUSSIAN_WORD_FILTER.getFilteredText("п'ятниця вона"));
+		assertEquals("", RUSSIAN_WORD_FILTER.getFilteredText("п'ятниця"));
+		assertEquals("", RUSSIAN_WORD_FILTER.getFilteredText("П'ЯТНИЦЯ"));
+
+		assertEquals("foo-bar", RUSSIAN_WORD_FILTER.getFilteredText("foo-bar"));
+		assertEquals("", RUSSIAN_WORD_FILTER.getFilteredText("foo-b'ar"));
+		assertEquals("", RUSSIAN_WORD_FILTER.getFilteredText("f'oo-bar"));
+		assertEquals("", RUSSIAN_WORD_FILTER.getFilteredText("f'oo-b'ar"));
+	}
+
 	/**
 	 * @throws IOException
 	 * @throws ParserConfigurationException
@@ -33,7 +51,7 @@ public final class HunspellAnalyzerTest {
 	@SuppressWarnings("static-method")
 	@Test
 	public void testApostrophe() throws IOException, ParserConfigurationException, SAXException {
-		final MorphologicalAnalyzer analyzer = new HunspellAnalyzer();
+		final MorphologicalAnalyzer analyzer = new LanguageToolAnalyzer();
 		stream(new String[]{
 				"п'ятниця",
 		}).forEach(text -> {
@@ -67,11 +85,13 @@ public final class HunspellAnalyzerTest {
 
 	/**
 	 * @throws IOException
+	 * @throws ParserConfigurationException
+	 * @throws SAXException
 	 */
 	@SuppressWarnings("static-method")
 	@Test
-	public void test() throws IOException {
-		final SerializingMorphologicalAnalyzer analyzer = new SerializingMorphologicalAnalyzer(new HunspellAnalyzer());
+	public void test() throws IOException, ParserConfigurationException, SAXException {
+		final SerializingMorphologicalAnalyzer analyzer = new SerializingMorphologicalAnalyzer(new LanguageToolAnalyzer());
 		stream(new String[]{
 				"какая",
 				"Мама мыла раму.",
