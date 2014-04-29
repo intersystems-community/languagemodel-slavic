@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.intersystems</groupId>
 	<artifactId>languagemodel-slavic</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 
 	<parent>
 		<groupId>org.sonatype.oss</groupId>
@@ -37,7 +37,8 @@
 		<url>https://github.com/intersystems-ru/languagemodel-slavic</url>
 		<connection>scm:git:git@github.com:intersystems-ru/languagemodel-slavic.git</connection>
 		<developerConnection>scm:git:git@github.com:intersystems-ru/languagemodel-slavic.git</developerConnection>
-	</scm>
+	  <tag>languagemodel-slavic-0.0.2</tag>
+  </scm>
 
 	<issueManagement>
 		<url>https://github.com/intersystems-ru/languagemodel-slavic/issues</url>
