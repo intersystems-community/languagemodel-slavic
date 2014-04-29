@@ -37,8 +37,8 @@
 		<url>https://github.com/intersystems-ru/languagemodel-slavic</url>
 		<connection>scm:git:git@github.com:intersystems-ru/languagemodel-slavic.git</connection>
 		<developerConnection>scm:git:git@github.com:intersystems-ru/languagemodel-slavic.git</developerConnection>
-	  <tag>HEAD</tag>
-  </scm>
+		<tag>HEAD</tag>
+	</scm>
 
 	<issueManagement>
 		<url>https://github.com/intersystems-ru/languagemodel-slavic/issues</url>
