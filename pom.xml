@@ -9,6 +9,13 @@
 	<groupId>com.intersystems</groupId>
 	<artifactId>languagemodel-slavic</artifactId>
 	<version>0.0.2-SNAPSHOT</version>
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+
 	<name>Slavic Language Model</name>
 	<description>Slavic Language Model for use with iKnow/iFind</description>
 	<url>http://intersystems-ru.github.io/languagemodel-slavic/</url>
@@ -28,7 +35,8 @@
 
 	<scm>
 		<url>https://github.com/intersystems-ru/languagemodel-slavic</url>
-		<connection>scm:git:https://github.com/intersystems-ru/languagemodel-slavic.git</connection>
+		<connection>scm:git:git@github.com:intersystems-ru/languagemodel-slavic.git</connection>
+		<developerConnection>scm:git:git@github.com:intersystems-ru/languagemodel-slavic.git</developerConnection>
 	</scm>
 
 	<issueManagement>
@@ -40,9 +48,13 @@
 	</ciManagement>
 
 	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
 		<repository>
-			<id>devio.us</id>
-			<url>ftp://devio.us/public_html/maven2</url>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
 
@@ -103,7 +115,7 @@
 					<execution>
 						<id>attach-sources</id>
 						<goals>
-							<goal>jar</goal>
+							<goal>jar-no-fork</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -159,15 +171,6 @@
 				</executions>
 			</plugin>
 		</plugins>
-
-		<extensions>
-			<extension>
-				<!-- See also https://maven.apache.org/plugins/maven-deploy-plugin/examples/deploy-ssh-external.html -->
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ftp</artifactId>
-				<version>2.3</version>
-			</extension>
-		</extensions>
 	</build>
 
 	<profiles>
