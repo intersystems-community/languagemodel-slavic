@@ -2,6 +2,8 @@ languagemodel-slavic
 ====================
 [![Build Status](https://api.travis-ci.org/intersystems-ru/languagemodel-slavic.png?branch=master)](https://travis-ci.org/intersystems-ru/languagemodel-slavic)
 
+Binaries are available at [Maven Central](http://search.maven.org/#search|gav|1|g%3A%22com.intersystems%22%20AND%20a%3A%22languagemodel-slavic%22)
+
 Please follow [this link](http://intersystems-ru.github.io/languagemodel-slavic/) for project documentation.
 
 # Stemming engines available
