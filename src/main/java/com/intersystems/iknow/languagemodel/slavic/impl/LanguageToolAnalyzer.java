@@ -119,7 +119,11 @@ public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
 							 */
 							if (!posTag.equals(SENTENCE_END)) {
 								final TagParseResult tagParseResult = engine.tagParser.parse(posTag);
-								final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(language, reading.getLemma(), tagParseResult.getPartOfSpeech(), tagParseResult.getCategories());
+								final String stem = reading.getLemma();
+								if (stem == null) {
+									continue;
+								}
+								final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(language, stem, tagParseResult.getPartOfSpeech(), tagParseResult.getCategories());
 								if (resultsGroup == null || resultsGroup.isEmpty()) {
 									resultsGroup = new LinkedHashSet<>();
 									results.put(token, resultsGroup);
