@@ -18,7 +18,7 @@
 
 	<name>Slavic Language Model</name>
 	<description>Slavic Language Model for use with iKnow/iFind</description>
-	<url>http://intersystems-ru.github.io/languagemodel-slavic/</url>
+	<url>https://intersystems-ru.github.io/languagemodel-slavic/</url>
 	<organization>
 		<name>InterSystems Corp.</name>
 		<url>http://www.intersystems.com/</url>
@@ -73,6 +73,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<emacsMode>true</emacsMode>
+		<javadoc.plugin.version>2.9.1</javadoc.plugin.version>
 		<languagetool.version>2.4</languagetool.version>
 	</properties>
 
@@ -124,7 +125,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>${javadoc.plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -213,6 +214,38 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>doclint-java8-disable</id>
+			<activation>
+				<jdk>[1.8,</jdk>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${javadoc.plugin.version}</version>
+						<configuration>
+							<additionalparam>-Xdoclint:none -quiet</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</build>
+
+			<reporting>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>${javadoc.plugin.version}</version>
+						<configuration>
+							<additionalparam>-Xdoclint:none -quiet</additionalparam>
+						</configuration>
+					</plugin>
+				</plugins>
+			</reporting>
+		</profile>
 	</profiles>
 
 	<dependencies>
@@ -254,7 +287,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>2.9.1</version>
+				<version>${javadoc.plugin.version}</version>
 			</plugin>
 		</plugins>
 	</reporting>
