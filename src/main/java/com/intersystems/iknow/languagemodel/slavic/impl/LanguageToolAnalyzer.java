@@ -114,15 +114,12 @@ public final class LanguageToolAnalyzer implements MorphologicalAnalyzer {
 					} else {
 						for (final AnalyzedToken reading : readings) {
 							final String posTag = reading.getPOSTag();
+							final String stem = reading.getLemma();
 							/*
-							 * Skip sentence end marks.
+							 * Skip sentence end marks and empty stems.
 							 */
-							if (!posTag.equals(SENTENCE_END)) {
+							if (!posTag.equals(SENTENCE_END) && stem != null) {
 								final TagParseResult tagParseResult = engine.tagParser.parse(posTag);
-								final String stem = reading.getLemma();
-								if (stem == null) {
-									continue;
-								}
 								final MorphologicalAnalysisResult result = new MorphologicalAnalysisResult(language, stem, tagParseResult.getPartOfSpeech(), tagParseResult.getCategories());
 								if (resultsGroup == null || resultsGroup.isEmpty()) {
 									resultsGroup = new LinkedHashSet<>();
