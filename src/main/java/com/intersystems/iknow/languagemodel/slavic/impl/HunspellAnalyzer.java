@@ -67,7 +67,7 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 		WORD_DELIMITERS_PATTERN = Pattern.compile(regex.toString());
 	}
 
-	private final LinkedHashMap<String, Set<Hunspell>> analyzers = new LinkedHashMap<>();
+	private final Map<String, Set<Hunspell>> analyzers = new LinkedHashMap<>();
 
 	public HunspellAnalyzer() {
 		final Set<String> basenames = new LinkedHashSet<>(asList(
@@ -94,7 +94,7 @@ public final class HunspellAnalyzer implements MorphologicalAnalyzer {
 		}
 
 
-		final LinkedHashMap<String, Set<String>> dictionaries = new LinkedHashMap<>();
+		final Map<String, Set<String>> dictionaries = new LinkedHashMap<>();
 
 		basenames.forEach(basename -> {
 			searchPaths.stream().map(searchPath -> new File(searchPath, basename + DICTIONARY_SUFFIX)).forEach(dictionary -> {
